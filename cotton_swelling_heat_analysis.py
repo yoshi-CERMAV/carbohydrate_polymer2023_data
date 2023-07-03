@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[107]:
+# In[2]:
 
 
 import pandas 
@@ -52,11 +52,12 @@ df2 = pandas.DataFrame(-R * temperature * kJ * np.log(data.T),
                        index = np.linspace(1,25, num=25))
 X=df2.index.values[:,] #moisture content
 Y=df2.iloc[:,0].values #equilibrium relative humidity
-#Y2= df2.iloc[:,1].values[1:]
 smoothing_factor = .2
 spl1 = UnivariateSpline(X,Y, k=5,s=smoothing_factor) 
 gibbs = spl1(X)
+heat = splev(X, splH, der=1)*A
 
+cm = 1/2.54
 #spl2 = UnivariateSpline(X,Y2,s=smoothing_factor)
 fig1, ax1 = plt.subplots(figsize=(10*cm, 6*cm))
 plt.title("heat of swelling as function of water content")
@@ -69,11 +70,9 @@ smoothed = splev(X1, splH)*A
 plt.plot (X1, smoothed,label="smoothed")
 plt.legend()
             
-cm = 1/2.54
 fig, ax = plt.subplots(figsize=(10*cm, 6*cm))
 axes = [ax, ax.twinx()]
 fig.subplots_adjust(right=0.75)
-heat = splev(X, splH, der=1)*A
 axes[1].tick_params(axis='y', colors='green')
 axes[0].plot(X, gibbs, label = "free energy change of swelling")
 axes[0].plot(X, -heat, label = "heat of swelling") 
@@ -83,4 +82,11 @@ axes[0].set_ylabel("Free energy / heat (kJ/mol)")
 axes[1].set_ylabel("entropy (J/K/mol)")
 axes[0].legend(bbox_to_anchor=(1.0, 1), loc='upper right', fontsize="8")
 axes[1].legend(bbox_to_anchor=(1.0, .7), fontsize="8")
+fig.savefig("cotton.pdf")
+
+
+# In[ ]:
+
+
+
 
